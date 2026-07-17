@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+
+  --color-ink: 246 241 231;
+  --color-ink-soft: 239 232 217;
+  --color-ink-surface: 236 231 239;
+  --color-ink-line: 219 211 226;
+
+  --color-paper: 48 44 56;
+  --color-paper-dim: 107 101 114;
+  --color-paper-faint: 157 150 166;
+
+  --color-brass: 124 143 184;
+  --color-brass-bright: 157 176 209;
+
+  --color-teal: 185 140 163;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --color-ink: 28 26 34;
+  --color-ink-soft: 36 33 43;
+  --color-ink-surface: 42 39 50;
+  --color-ink-line: 61 56 71;
+
+  --color-paper: 241 236 227;
+  --color-paper-dim: 199 192 203;
+  --color-paper-faint: 143 136 155;
+
+  --color-brass: 143 160 196;
+  --color-brass-bright: 180 196 227;
+
+  --color-teal: 201 156 178;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  @apply bg-ink text-paper font-sans antialiased transition-colors duration-300;
+}
+
+::selection {
+  background-color: rgb(var(--color-brass));
+  color: rgb(var(--color-ink));
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--color-ink));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-ink-line));
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-brass));
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgb(var(--color-brass));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.key {
+  @apply text-teal;
+}
+.punct {
+  @apply text-paper-faint;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reveal {
+  animation: rise 0.6s ease-out both;
+}
