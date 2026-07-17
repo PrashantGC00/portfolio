@@ -5,7 +5,7 @@ import Model from './Model.jsx'
 
 const MIN_WIDTH = 1280
 const MAX_WIDTH = 1920
-const MIN_SCALE = 0.8
+const MIN_SCALE = 3
 const MAX_SCALE = 4
 
 function clamp(value, min, max) {
