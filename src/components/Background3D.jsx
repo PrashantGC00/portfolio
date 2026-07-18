@@ -2,6 +2,8 @@ import { Suspense, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, OrbitControls } from '@react-three/drei'
 import Model from './Model.jsx'
+import { useSceneReady } from '../context/screen-ready.jsx'
+import { useMediaQuery } from '../hooks/use-meida-query.jsx'
 
 const MIN_WIDTH = 1280
 const MAX_WIDTH = 1920
@@ -14,31 +16,37 @@ function clamp(value, min, max) {
 
 function useResponsiveScale() {
   const [scale, setScale] = useState(MIN_SCALE)
-
   useEffect(() => {
     const computeScale = () => {
       const w = window.innerWidth
       const t = clamp((w - MIN_WIDTH) / (MAX_WIDTH - MIN_WIDTH), 0, 1)
       return MIN_SCALE + t * (MAX_SCALE - MIN_SCALE)
     }
-
     const handleResize = () => setScale(computeScale())
     handleResize()
-
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
-
   return scale
 }
 
-
 export default function Background3D() {
+  const isVisible = useMediaQuery('(min-width: 1280px)')
   const scale = useResponsiveScale()
   const modelScale = scale * 0.01
+  const { setReady } = useSceneReady()
+
+  useEffect(() => {
+    if (!isVisible) {
+      setReady('MACINTOSH')
+    }
+  }, [isVisible, setReady])
+
+  if (!isVisible) return null
+
   return (
     <div
-      className=" xl:block fixed top-0 right-0 h-screen w-[42vw] z-10 pointer-events-auto bg-ink transition-colors duration-300 ease-in-out"
+      className="hidden xl:block fixed top-0 right-0 h-screen w-[42vw] z-10 pointer-events-auto bg-ink transition-colors duration-300 ease-in-out"
       aria-hidden="true"
     >
       <Canvas
@@ -46,6 +54,7 @@ export default function Background3D() {
         camera={{ position: [3, 2, 5], fov: 40 }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.5]}
+        className='cursor-grab active:cursor-grabbing'
       >
         <OrbitControls
           enableZoom={false}

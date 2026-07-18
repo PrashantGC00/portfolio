@@ -5,10 +5,11 @@ import Experience from './components/Experience.jsx'
 import Projects from './components/Projects.jsx'
 import Footer from './components/Footer.jsx'
 import Loader from './components/Loader.jsx'
+import { SceneReadyProvider } from './context/screen-ready.jsx'
 
 export default function App() {
   return (
-    <>
+    <SceneReadyProvider>
       <Loader />
       <div className="lg:flex relative bg-ink z-20 transition-colors duration-300 ease-in-out">
         <Background3D />
@@ -22,6 +23,6 @@ export default function App() {
           </main>
         </div>
       </div>
-    </>
+    </SceneReadyProvider>
   )
 }

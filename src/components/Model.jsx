@@ -1,7 +1,10 @@
 import { useRef, useMemo, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useGLTF, Center, useVideoTexture } from '@react-three/drei'
+import { useGLTF, Center } from '@react-three/drei'
 import * as THREE from 'three'
+import { useSceneReady } from '../context/screen-ready'
+
+const NAME = 'MACINTOSH'
 
 function useIsDarkMode() {
   const [isDark, setIsDark] = useState(
@@ -41,27 +44,55 @@ const COLOR_TRANSITION_SPEED = 3.5
 const VIDEOS = ['/static.mp4', '/code_1.mp4']
 
 function Screen({ geometry }) {
-  const [count, setCount] = useState(0)
-  const video = VIDEOS[count]
-  const texture = useVideoTexture(video, {
-    muted: true,
-    loop: true,
-    start: true,
-    playsInline: true,
-  })
-  texture.colorSpace = THREE.SRGBColorSpace
-  texture.flipY = true
+  const [index, setIndex] = useState(0)
+  const videosRef = useRef([])
+  const materialRef = useRef()
+
+  const textures = useMemo(() => {
+    return VIDEOS.map((src) => {
+      const video = document.createElement('video')
+      video.src = src
+      video.muted = true
+      video.loop = true
+      video.playsInline = true
+      video.crossOrigin = 'anonymous'
+      video.play().catch(() => { })
+      videosRef.current.push(video)
+
+      const texture = new THREE.VideoTexture(video)
+      texture.colorSpace = THREE.SRGBColorSpace
+      texture.flipY = true
+      return texture
+    })
+  }, [])
+
   const material = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        map: texture,
+        map: textures[0],
         toneMapped: false,
       }),
-    [texture],
+    [textures],
   )
+  materialRef.current = material
+
+  useEffect(() => {
+    return () => {
+      videosRef.current.forEach((v) => {
+        v.pause()
+        v.src = ''
+        v.load()
+      })
+    }
+  }, [])
 
   const handleClick = () => {
-    setCount((prev) => (prev + 1) % VIDEOS.length)
+    setIndex((prev) => {
+      const next = (prev + 1) % VIDEOS.length
+      materialRef.current.map = textures[next]
+      materialRef.current.needsUpdate = true
+      return next
+    })
   }
 
   return (
@@ -71,7 +102,7 @@ function Screen({ geometry }) {
       geometry={geometry}
       material={material}
       onClick={(e) => {
-        e.stopPropagation();
+        e.stopPropagation()
         handleClick()
       }}
       onPointerOver={() => (document.body.style.cursor = 'pointer')}
@@ -82,6 +113,8 @@ function Screen({ geometry }) {
 
 export default function Model(props) {
   const group = useRef()
+  const { setReady } = useSceneReady()
+  const isReady = useRef(false)
   const { nodes, materials } = useGLTF('/apple_macintosh.glb')
   const isDark = useIsDarkMode()
 
@@ -117,8 +150,12 @@ export default function Model(props) {
     targetColors.current = targets
   }, [isDark, localMaterials, originalColors])
 
-  useFrame(({ clock }, delta) => {
-    if (!group.current) return
+  useFrame((_, delta) => {
+    if (!group.current && !isReady.current) return
+    if (!isReady.current) {
+      isReady.current = true
+      setReady(NAME)
+    }
     // const t = clock.getElapsedTime()
     // const swing = Math.PI / 9
     // const offset = Math.PI / 9
