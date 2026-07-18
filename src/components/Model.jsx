@@ -38,8 +38,12 @@ const DARK_MODE_MATERIAL_MAP = {
 
 const COLOR_TRANSITION_SPEED = 3.5
 
+const VIDEOS = ['/static.mp4', '/code_1.mp4']
+
 function Screen({ geometry }) {
-  const texture = useVideoTexture('/static.mp4', {
+  const [count, setCount] = useState(0)
+  const video = VIDEOS[count]
+  const texture = useVideoTexture(video, {
     muted: true,
     loop: true,
     start: true,
@@ -56,12 +60,20 @@ function Screen({ geometry }) {
     [texture],
   )
 
+  const handleClick = () => {
+    setCount((prev) => (prev + 1) % VIDEOS.length)
+  }
+
   return (
     <mesh
       castShadow
       receiveShadow
       geometry={geometry}
       material={material}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleClick()
+      }}
       onPointerOver={() => (document.body.style.cursor = 'pointer')}
       onPointerOut={() => (document.body.style.cursor = 'auto')}
     />
@@ -107,10 +119,10 @@ export default function Model(props) {
 
   useFrame(({ clock }, delta) => {
     if (!group.current) return
-    const t = clock.getElapsedTime()
-    const swing = Math.PI / 9
-    const offset = Math.PI / 9
-    group.current.rotation.y = Math.cos(t * 0.6) * swing + offset
+    // const t = clock.getElapsedTime()
+    // const swing = Math.PI / 9
+    // const offset = Math.PI / 9
+    // group.current.rotation.y = Math.cos(t * 0.6) * swing + offset
 
     const targets = targetColors.current
     Object.entries(localMaterials).forEach(([key, mat]) => {
