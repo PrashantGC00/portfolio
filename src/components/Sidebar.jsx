@@ -16,7 +16,15 @@ export default function Sidebar() {
           {profile.blurb}
         </p>
 
-        <nav className="mt-12 hidden lg:block" aria-label="Section navigation">
+        <a
+          href="/Prashant GC Resume.pdf"
+          download="Prashant GC Resume.pdf"
+          className="mt-6 inline-flex items-center gap-2 rounded border border-ink-line px-4 py-2 font-mono text-sm text-paper-dim transition-colors hover:border-brass/60 hover:text-brass"
+        >
+          Download CV
+        </a>
+
+        <nav className="mt-10 hidden lg:block" aria-label="Section navigation">
           <ul className="space-y-4 font-mono text-sm">
             {nav.map((item, i) => (
               <li key={item.key}>
