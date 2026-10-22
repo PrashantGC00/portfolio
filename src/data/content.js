@@ -28,9 +28,9 @@ export const about = [
 export const experience = [
   {
     index: "1",
-    role: "Junior Full-Stack Developer",
+    role: "Full-Stack Developer",
     org: "Acid Integrations",
-    period: "May 2025 — Present",
+    period: "May 2025 — Oct 2026",
     summary:
       "Developing and maintaining production web applications, contributing across the frontend and backend in a collaborative team environment.",
     stack: [
@@ -42,6 +42,9 @@ export const experience = [
       "PostgreSQL",
       "MySQL",
       "Keycloak",
+      "Redis",
+      "MongoDB",
+      "UML"
     ],
   },
   {
@@ -58,6 +61,7 @@ export const experience = [
       "MongoDB",
       "JavaScript",
       "TypeScript",
+      "AWS"
     ],
   },
   {
@@ -67,7 +71,7 @@ export const experience = [
     period: "Jul 2023 — Sept 2024",
     summary:
       "Developed systems-level software and optimized computation in UNIX environments.",
-    stack: ["C", "UNIX", "POSIX Threads"],
+    stack: ["C", "UNIX", "POSIX Threads", "CUDA"],
   },
   {
     index: "4",
